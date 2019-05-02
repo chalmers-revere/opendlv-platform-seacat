@@ -1,0 +1,82 @@
+# Copyright (C) 2019 Ola Benderius
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: '2'
+
+services:
+    dev-camera-axis0:
+        container_name: dev-camera-axis0
+        image: chalmersrevere/opendlv-device-mjpeg-over-http-multi:v0.0.4
+        network_mode: "host"
+        environment:
+        - DISPLAY=$DISPLAY
+        volumes:
+        - /tmp:/tmp
+        command: "opendlv-device-mjpeg-over-http --url=http://10.42.45.50/axis-cgi/mjpg/video.cgi\\?channel=0\\&.mjpg --width=1280 --height=720 --name.i420=axis0.i420 --name.argb=axis0.argb"
+
+    video-x264-encoder-amd64:
+        container_name: video-x264-encoder-amd64
+        build:
+            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
+            dockerfile: Dockerfile.amd64
+        network_mode: "host"
+        environment:
+        - CLUON_SHAREDMEMORY_POSIX=1
+        volumes:
+        - /tmp:/tmp
+        command: "opendlv-video-x264-encoder --cid=100 --name=axis0.i420 --width=1280 --height=720"
+
+    device-motor-bellmarineac34-0:
+        container_name: opendlv-device-motor-bellmarineac34-0
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=111 --can=can0 --sender-stamp-offset=0"
+    
+    device-motor-bellmarineac34-1:
+        container_name: opendlv-device-motor-bellmarineac34-1
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=111 --can=can1 --sender-stamp-offset=10"
+
+    device-gps-nmea:
+        container_name: opendlv-device-gps-nmea
+        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.13
+        network_mode: "host"
+        command: "opendlv-device-gps-nmea --nmea_ip=Your4GModemIP --nmea_port=8500 --cid=111"
+
+    ui-seacat:
+        container_name: opendlv-ui-seacat
+        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.2
+        network_mode: "host"
+        command: "opendlv-ui-seacat --cid=111 --http-root=/srv/http --port=8000"
+
+    vehicle-view:
+        container_name: opendlv-vehicle-view
+        image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.53
+        restart: always
+        network_mode: "host"
+        volumes:
+        - ~/recordings:/opt/vehicle-view/recordings
+        - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+        - OD4SESSION_CID=100
+        - PLAYBACK_OD4SESSION_CID=200
+        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino        
+        ports:
+        - "8081:8081"
+        cap_add:
+        - SYS_NICE
+        entrypoint: ""
+        command: "nice -n -15 node index.js"
