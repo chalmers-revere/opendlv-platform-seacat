@@ -69,15 +69,15 @@ services:
 
     device-motor-bellmarineac34-0:
         container_name: opendlv-device-motor-bellmarineac34-0
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
         network_mode: "host"
         command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can0 --sender-stamp-offset=0"
     
     device-motor-bellmarineac34-1:
         container_name: opendlv-device-motor-bellmarineac34-1
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
         network_mode: "host"
-        command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can1 --sender-stamp-offset=10"
+        command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can1 --sender-stamp-offset=10 --flip"
 
     device-gps-nmea:
         container_name: opendlv-device-gps-nmea
