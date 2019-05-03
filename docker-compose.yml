@@ -60,6 +60,12 @@ services:
         entrypoint: ""
         command: "nice -n -15 node index.js"
 
+    dev-gps-nmea:
+        container_name: dev-gps-nmea
+        image: nmea-udp:latest
+        restart: on-failure
+        network_mode: "host"
+        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
 
     device-motor-bellmarineac34-0:
         container_name: opendlv-device-motor-bellmarineac34-0
