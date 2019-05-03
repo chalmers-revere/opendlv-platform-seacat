@@ -18,53 +18,32 @@ version: '2'
 services:
     dev-camera-axis0:
         container_name: dev-camera-axis0
-        image: chalmersrevere/opendlv-device-mjpeg-over-http-multi:v0.0.4
+        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
+        ipc: "host"
+        restart: "always"
         network_mode: "host"
-        environment:
-        - DISPLAY=$DISPLAY
         volumes:
         - /tmp:/tmp
-        command: "opendlv-device-mjpeg-over-http --url=http://10.42.45.50/axis-cgi/mjpg/video.cgi\\?channel=0\\&.mjpg --width=1280 --height=720 --name.i420=axis0.i420 --name.argb=axis0.argb"
+        - $HOME/recordings:/recordings  
+        command: "/usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=1280 --height=720 --name.i420=axis0.i420 --name.argb=axis0.argb --cid=100"
 
     video-x264-encoder-amd64:
         container_name: video-x264-encoder-amd64
         build:
             context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
             dockerfile: Dockerfile.amd64
+        depends_on:
+        - dev-camera-axis0
+        restart: "always"
         network_mode: "host"
-        environment:
-        - CLUON_SHAREDMEMORY_POSIX=1
+        ipc: "host"
         volumes:
         - /tmp:/tmp
-        command: "opendlv-video-x264-encoder --cid=100 --name=axis0.i420 --width=1280 --height=720"
-
-    device-motor-bellmarineac34-0:
-        container_name: opendlv-device-motor-bellmarineac34-0
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
-        network_mode: "host"
-        command: "opendlv-device-motor-bellmarineac34 --cid=111 --can=can0 --sender-stamp-offset=0"
-    
-    device-motor-bellmarineac34-1:
-        container_name: opendlv-device-motor-bellmarineac34-1
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
-        network_mode: "host"
-        command: "opendlv-device-motor-bellmarineac34 --cid=111 --can=can1 --sender-stamp-offset=10"
-
-    device-gps-nmea:
-        container_name: opendlv-device-gps-nmea
-        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.13
-        network_mode: "host"
-        command: "opendlv-device-gps-nmea --nmea_ip=Your4GModemIP --nmea_port=8500 --cid=111"
-
-    ui-seacat:
-        container_name: opendlv-ui-seacat
-        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.2
-        network_mode: "host"
-        command: "opendlv-ui-seacat --cid=111 --http-root=/srv/http --port=8000"
+        command: "/usr/bin/opendlv-video-x264-encoder --cid=100 --name=axis0.i420 --width=1280 --height=720"
 
     vehicle-view:
         container_name: opendlv-vehicle-view
-        image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.53
+        image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
         restart: always
         network_mode: "host"
         volumes:
@@ -73,10 +52,36 @@ services:
         environment:
         - OD4SESSION_CID=100
         - PLAYBACK_OD4SESSION_CID=200
-        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino        
+        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino
         ports:
         - "8081:8081"
         cap_add:
         - SYS_NICE
         entrypoint: ""
         command: "nice -n -15 node index.js"
+
+
+    device-motor-bellmarineac34-0:
+        container_name: opendlv-device-motor-bellmarineac34-0
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can0 --sender-stamp-offset=0"
+    
+    device-motor-bellmarineac34-1:
+        container_name: opendlv-device-motor-bellmarineac34-1
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can1 --sender-stamp-offset=10"
+
+    device-gps-nmea:
+        container_name: opendlv-device-gps-nmea
+        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.13
+        network_mode: "host"
+        command: "opendlv-device-gps-nmea --nmea_ip=192.168.1.5 --nmea_port=8500 --cid=100"
+
+    ui-seacat:
+        container_name: opendlv-ui-seacat
+        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.2
+        network_mode: "host"
+        command: "opendlv-ui-seacat --cid=100 --http-root=/srv/http --port=8000"
+
