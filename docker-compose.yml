@@ -18,35 +18,35 @@ version: '2'
 services:
     dev-camera-rtp0:
         container_name: dev-camera-rtp0
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
         ipc: "host"
         restart: "always"
         network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=1 --cid=100 --id=0"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=1 --cid=100 --id=0 --client-port-a=35000"
     
     dev-camera-rtp1:
         container_name: dev-camera-rtp1
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
         ipc: "host"
         restart: "always"
         network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=2 --cid=100 --id=1"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=2 --cid=100 --id=1 --client-port-a=35002"
     
     dev-camera-rtp2:
         container_name: dev-camera-rtp2
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
         ipc: "host"
         restart: "always"
         network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=3 --cid=100 --id=2"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=3 --cid=100 --id=2 --client-port-a=35004"
     
     dev-camera-rtp3:
         container_name: dev-camera-rtp3
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
         ipc: "host"
         restart: "always"
         network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=4 --cid=100 --id=3"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=4 --cid=100 --id=3 --client-port-a=35006"
 
     vehicle-view:
         container_name: opendlv-vehicle-view
