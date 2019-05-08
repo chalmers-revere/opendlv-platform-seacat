@@ -16,30 +16,37 @@
 version: '2'
 
 services:
-    dev-camera-axis0:
-        container_name: dev-camera-axis0
-        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
+    dev-camera-rtp0:
+        container_name: dev-camera-rtp0
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
         ipc: "host"
         restart: "always"
         network_mode: "host"
-        volumes:
-        - /tmp:/tmp
-        - $HOME/recordings:/recordings  
-        command: "/usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=1280 --height=720 --name.i420=axis0.i420 --name.argb=axis0.argb --cid=100"
-
-    video-x264-encoder-amd64:
-        container_name: video-x264-encoder-amd64
-        build:
-            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
-            dockerfile: Dockerfile.amd64
-        depends_on:
-        - dev-camera-axis0
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=1 --cid=100 --id=0"
+    
+    dev-camera-rtp1:
+        container_name: dev-camera-rtp1
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        ipc: "host"
         restart: "always"
         network_mode: "host"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=2 --cid=100 --id=1"
+    
+    dev-camera-rtp2:
+        container_name: dev-camera-rtp2
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
         ipc: "host"
-        volumes:
-        - /tmp:/tmp
-        command: "/usr/bin/opendlv-video-x264-encoder --cid=100 --name=axis0.i420 --width=1280 --height=720"
+        restart: "always"
+        network_mode: "host"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=3 --cid=100 --id=2"
+    
+    dev-camera-rtp3:
+        container_name: dev-camera-rtp3
+        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.1
+        ipc: "host"
+        restart: "always"
+        network_mode: "host"
+        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=4 --cid=100 --id=3"
 
     vehicle-view:
         container_name: opendlv-vehicle-view
