@@ -24,21 +24,21 @@ services:
 #        network_mode: "host"
 #        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=1 --cid=100 --id=2 --client-port-udp-a=35000 --verbose"
     
-    dev-camera-rtp1:
-        container_name: dev-camera-rtp1
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
-        ipc: "host"
-        restart: "always"
-        network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=2 --cid=100 --id=0 --client-port-udp-a=35002 --verbose"
+#    dev-camera-rtp1:
+#        container_name: dev-camera-rtp1
+#        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
+#        ipc: "host"
+#        restart: "always"
+#        network_mode: "host"
+#        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=2 --cid=100 --id=0 --client-port-udp-a=35002 --verbose"
     
-    dev-camera-rtp2:
-        container_name: dev-camera-rtp2
-        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
-        ipc: "host"
-        restart: "always"
-        network_mode: "host"
-        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=3 --cid=100 --id=1 --client-port-udp-a=35004 --verbose"
+#    dev-camera-rtp2:
+#        container_name: dev-camera-rtp2
+#        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
+#        ipc: "host"
+#        restart: "always"
+#        network_mode: "host"
+#        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=3 --cid=100 --id=1 --client-port-udp-a=35004 --verbose"
     
 #    dev-camera-rtp3:
 #        container_name: dev-camera-rtp3
@@ -48,11 +48,46 @@ services:
 #        network_mode: "host"
 #        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=4 --cid=100 --id=3 --client-port-udp-a=35006 --verbose"
 
+    dev-camera-axis-out:
+        container_name: dev-camera-axis-out
+        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.2
+        cpuset: "2"
+        restart: always
+        ipc: "host"
+        network_mode: "host"
+        environment:
+        - DISPLAY=$DISPLAY
+        volumes:
+        - /tmp:/tmp
+        - $HOME/recordings:/recordings
+        working_dir: /recordings
+        cap_add:
+        - SYS_NICE
+        entrypoint: ""
+        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.1/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=100 --id=0"
+
+    video-x264-encoder-amd64:
+        build:
+            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
+            dockerfile: Dockerfile.amd64
+        restart: on-failure
+        network_mode: "host"
+        ipc: "host"
+        volumes:
+        - /tmp:/tmp
+        command: "--cid=100 --name=axis-out.i420 --width=640 --height=480"
+
     gw-wice:
         container_name: opendlv-gw-wice
         image: chalmersrevere/opendlv-gw-wice-amd64:v0.0.1
         network_mode: "host"
         command: "opendlv-gw-wice --cid=100 --ip=88.131.107.11 --port=10002"
+
+    gw-sms-rut:
+        container_name: opendlv-gw-sms-rut
+        image: chalmersrevere/opendlv-gw-sms-rut-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-gw-sms-rut --cid=100 --url=http://192.168.1.1 --user=revere --password=reveregwsms --verbose"
 
     vehicle-view:
         container_name: opendlv-vehicle-view
@@ -73,12 +108,35 @@ services:
         entrypoint: ""
         command: "nice -n -15 node index.js"
 
-    dev-gps-nmea:
-        container_name: dev-gps-nmea
-        image: nmea-udp:latest
+    logic-demo-seacat:
+        container_name: opendlv-logic-demo-seacat
+        image: chalmersrevere/opendlv-logic-demo-seacat-amd64:v0.0.1
+        network_mode: "host"
+        command: "opendlv-logic-demo-seacat --cid=100 --verbose"
+    
+    perception-vision-detectobjectbycolor:
+        container_name: perception-vision-detectobjectbycolor
+        image: chalmersrevere/opendlv-perception-vision-detectobjectbycolor-amd64:v0.0.1
         restart: on-failure
         network_mode: "host"
-        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
+        ipc: "host"
+        volumes:
+        - /tmp:/tmp
+        command: "opendlv-perception-vision-detectobjectbycolor --cid=100 --name=axis-out.argb --width=640 --height=368 --verbose --hl=105 --hu=130 --sl=200 --su=255 --vl=30 --vu=160"
+
+    logic-pathfollower-twopointmodel:
+        container_name: opendlv-logic-pathfollower-twopointmodel
+        image: chalmersrevere/opendlv-logic-pathfollower-twopointmodel:v0.0.1
+        network_mode: "host"
+        volumes:
+        - ./CID-100-recording-2019-05-13_143955.rec:/var/path.rec
+        command: "opendlv-logic-pathfollower-twopointmodel --cid=100 --freq=20 --rec-path=/var/path.rec --max-preview-distance=80.0 --time-to-align=2.5 --time-to-arrive=10.0 --verbose"
+
+    logic-control-differentialsteering:
+        container_name: logic-control-differentialsteering
+        image: chalmersrevere/opendlv-logic-control-differentialsteering-amd64:v0.0.1 
+        network_mode: "host"
+        command: "opendlv-logic-control-differentialsteering --cid=100 --id-left=0 --id-right=10 --track-width=1.8 --speed-max=1.5"
 
     device-motor-bellmarineac34-0:
         container_name: opendlv-device-motor-bellmarineac34-0
@@ -103,4 +161,3 @@ services:
         image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.3
         network_mode: "host"
         command: "opendlv-ui-seacat --cid=100 --http-root=/srv/http --port=8000"
-
