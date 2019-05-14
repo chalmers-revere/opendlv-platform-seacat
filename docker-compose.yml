@@ -130,13 +130,13 @@ services:
         network_mode: "host"
         volumes:
         - ./CID-100-recording-2019-05-13_143955.rec:/var/path.rec
-        command: "opendlv-logic-pathfollower-twopointmodel --cid=100 --freq=20 --rec-path=/var/path.rec --max-preview-distance=80.0 --time-to-align=2.5 --time-to-arrive=10.0 --verbose"
+        command: "opendlv-logic-pathfollower-twopointmodel --cid=100 --freq=20 --rec-path=/var/path.rec --max-preview-distance=20.0 --time-to-align=2.0 --time-to-arrive=20.0 --verbose"
 
     logic-control-differentialsteering:
         container_name: logic-control-differentialsteering
         image: chalmersrevere/opendlv-logic-control-differentialsteering-amd64:v0.0.1 
         network_mode: "host"
-        command: "opendlv-logic-control-differentialsteering --cid=100 --id-left=0 --id-right=10 --track-width=1.8 --speed-max=1.5"
+        command: "opendlv-logic-control-differentialsteering --cid=100 --id-left=0 --id-right=10 --freq=20 --track-width=1.8 --speed-max=1.5"
 
     device-motor-bellmarineac34-0:
         container_name: opendlv-device-motor-bellmarineac34-0
@@ -152,10 +152,12 @@ services:
 
     dev-gps-nmea:
         container_name: dev-gps-nmea
-        image: nmea-udp:latest
+#       image: nmea-udp:latest
+        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.14
         restart: on-failure
         network_mode: "host"
-        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
+#        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
+        command: "--nmea_ip=10.42.42.41 --nmea_port=9999 --cid=100"
 
     ui-seacat:
         container_name: opendlv-ui-seacat
