@@ -62,7 +62,7 @@ services:
         cap_add:
         - SYS_NICE
         entrypoint: ""
-        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.1/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=100 --id=0"
+        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=100 --id=0"
 
     video-x264-encoder-amd64:
         build:
@@ -112,15 +112,15 @@ services:
         network_mode: "host"
         command: "opendlv-logic-demo-seacat --cid=100 --verbose"
     
-    perception-vision-detectobjectbycolor:
-        container_name: perception-vision-detectobjectbycolor
-        image: chalmersrevere/opendlv-perception-vision-detectobjectbycolor-amd64:v0.0.1
-        restart: on-failure
-        network_mode: "host"
-        ipc: "host"
-        volumes:
-        - /tmp:/tmp
-        command: "opendlv-perception-vision-detectobjectbycolor --cid=100 --name=axis-out.argb --width=640 --height=368 --verbose --hl=105 --hu=130 --sl=200 --su=255 --vl=30 --vu=160"
+#    perception-vision-detectobjectbycolor:
+#        container_name: perception-vision-detectobjectbycolor
+#        image: chalmersrevere/opendlv-perception-vision-detectobjectbycolor-amd64:v0.0.1
+#        restart: on-failure
+#        network_mode: "host"
+#        ipc: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        command: "opendlv-perception-vision-detectobjectbycolor --cid=100 --name=axis-out.argb --width=640 --height=368 --verbose --hl=105 --hu=130 --sl=200 --su=255 --vl=30 --vu=160"
 
     logic-pathfollower-twopointmodel:
         container_name: opendlv-logic-pathfollower-twopointmodel
