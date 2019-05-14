@@ -150,11 +150,12 @@ services:
         network_mode: "host"
         command: "opendlv-device-motor-bellmarineac34 --cid=100 --can=can1 --sender-stamp-offset=10 --flip"
 
-    device-gps-nmea:
-        container_name: opendlv-device-gps-nmea
-        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.13
+    dev-gps-nmea:
+        container_name: dev-gps-nmea
+        image: nmea-udp:latest
+        restart: on-failure
         network_mode: "host"
-        command: "opendlv-device-gps-nmea --nmea_ip=192.168.1.5 --nmea_port=8500 --cid=100"
+        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
 
     ui-seacat:
         container_name: opendlv-ui-seacat
