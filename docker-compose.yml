@@ -55,8 +55,6 @@ services:
         restart: always
         ipc: "host"
         network_mode: "host"
-        environment:
-        - DISPLAY=$DISPLAY
         volumes:
         - /tmp:/tmp
         - $HOME/recordings:/recordings
@@ -75,7 +73,7 @@ services:
         ipc: "host"
         volumes:
         - /tmp:/tmp
-        command: "--cid=100 --name=axis-out.i420 --width=640 --height=480"
+        command: "--name=axis-out.i420 --width=640 --height=480 --cid=100 --id=0"
 
     gw-wice:
         container_name: opendlv-gw-wice
