@@ -68,7 +68,9 @@ services:
         build:
             context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
             dockerfile: Dockerfile.amd64
-        restart: on-failure
+        depends_on:
+        - dev-camera-axis-out
+        restart: always
         network_mode: "host"
         ipc: "host"
         volumes:
