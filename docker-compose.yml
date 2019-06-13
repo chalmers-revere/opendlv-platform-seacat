@@ -62,7 +62,7 @@ services:
         cap_add:
         - SYS_NICE
         entrypoint: ""
-        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=100 --id=0"
+        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=100 --id=0"
 
     video-x264-encoder-amd64:
         build:
@@ -77,17 +77,32 @@ services:
         - /tmp:/tmp
         command: "--name=axis-out.i420 --width=640 --height=480 --cid=100 --id=0"
 
-    gw-wice:
-        container_name: opendlv-gw-wice
-        image: chalmersrevere/opendlv-gw-wice-amd64:v0.0.1
+    device-lidar-vlp16:
+        container_name: device-lidar-vlp16
+        image: chalmersrevere/opendlv-device-lidar-vlp16-multi:v0.0.10
+        restart: always
         network_mode: "host"
-        command: "opendlv-gw-wice --cid=100 --ip=88.131.107.11 --port=10002"
+        command: "--vlp16_ip=0.0.0.0 --vlp16_port=2368 --cid=100 --id=0 --nogpstime"
 
-    gw-sms-rut:
-        container_name: opendlv-gw-sms-rut
-        image: chalmersrevere/opendlv-gw-sms-rut-amd64:v0.0.1
-        network_mode: "host"
-        command: "opendlv-gw-sms-rut --cid=100 --url=http://192.168.1.1 --user=revere --password=reveregwsms --verbose"
+#    gw-wice:
+#        container_name: opendlv-gw-wice
+#        image: chalmersrevere/opendlv-gw-wice-amd64:v0.0.1
+#        network_mode: "host"
+#        command: "opendlv-gw-wice --cid=100 --ip=88.131.107.11 --port=10002"
+    
+#    device-gamepad:
+#        container_name: opendlv-device-gamepad
+#        image: chalmersrevere/opendlv-device-gamepad-amd64:seacat
+#        devices:
+#        - /dev/input/js0
+#        network_mode: "host"
+#        command: "opendlv-device-gamepad --cid=100 --freq=10 --device=/dev/input/js0 --axis-left-updown=1 --axis-right-updown=4"
+
+#    gw-sms-rut:
+#        container_name: opendlv-gw-sms-rut
+#        image: chalmersrevere/opendlv-gw-sms-rut-amd64:v0.0.1
+#        network_mode: "host"
+#        command: "opendlv-gw-sms-rut --cid=100 --url=http://192.168.1.1 --user=revere --password=reveregwsms --verbose"
 
     vehicle-view:
         container_name: opendlv-vehicle-view
@@ -108,11 +123,11 @@ services:
         entrypoint: ""
         command: "nice -n -15 node index.js"
 
-    logic-demo-seacat:
-        container_name: opendlv-logic-demo-seacat
-        image: chalmersrevere/opendlv-logic-demo-seacat-amd64:v0.0.1
-        network_mode: "host"
-        command: "opendlv-logic-demo-seacat --cid=100 --verbose"
+#    logic-demo-seacat:
+#        container_name: opendlv-logic-demo-seacat
+#        image: chalmersrevere/opendlv-logic-demo-seacat-amd64:v0.0.1
+#        network_mode: "host"
+#        command: "opendlv-logic-demo-seacat --cid=100 --verbose"
     
 #    perception-vision-detectobjectbycolor:
 #        container_name: perception-vision-detectobjectbycolor
@@ -129,7 +144,7 @@ services:
         image: chalmersrevere/opendlv-logic-pathfollower-twopointmodel:v0.0.1
         network_mode: "host"
         volumes:
-        - ./CID-100-recording-2019-05-13_143955.rec:/var/path.rec
+        - ./CID-100-recording-2019-06-13_131620-selection.rec:/var/path.rec
         command: "opendlv-logic-pathfollower-twopointmodel --cid=100 --freq=20 --rec-path=/var/path.rec --max-preview-distance=20.0 --time-to-align=2.0 --time-to-arrive=20.0 --verbose"
 
     logic-control-differentialsteering:
@@ -157,10 +172,10 @@ services:
         restart: on-failure
         network_mode: "host"
 #        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=100"
-        command: "--nmea_ip=10.42.42.41 --nmea_port=9999 --cid=100"
+        command: "--nmea_ip=10.42.0.22 --nmea_port=9999 --cid=100"
 
-    ui-seacat:
-        container_name: opendlv-ui-seacat
-        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.3
-        network_mode: "host"
-        command: "opendlv-ui-seacat --cid=100 --http-root=/srv/http --port=8000"
+#    ui-seacat:
+#        container_name: opendlv-ui-seacat
+#        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.3
+#        network_mode: "host"
+#        command: "opendlv-ui-seacat --cid=100 --http-root=/srv/http --port=8000"
