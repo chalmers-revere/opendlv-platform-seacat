@@ -14,8 +14,81 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 version: '2'
-
+######################################################################################
+#
+# Microservices for Seacat (SP Marine Tech).
+#
+######################################################################################
 services:
+    
+    ###########################################################################
+    # Relay Services
+
+#       relay-serve-from-50:
+#        container_name: relay-serve-from-50
+#        image: chrberger/cluon-relay-multi:v0.0.4
+#        cpuset: "1"
+#        restart: always
+#        network_mode: "host"
+#        cap_add:
+#        - SYS_NICE
+#        entrypoint: ""
+#        command: "nice -n -6 /usr/bin/cluon-relay --cid-from=50 --via-tcp=2345 --timeout=200"
+#        runtime: runc
+
+#       relay-receive-from-50:
+#        container_name: relay-receive-from-50
+#        image: chrberger/cluon-relay-multi:v0.0.4
+#        cpuset: "1"
+#        restart: always
+#        network_mode: "host"
+#        cap_add:
+#        - SYS_NICE
+#        entrypoint: ""
+#        command: "nice -n -6 /usr/bin/cluon-relay --cid-to=160 --via-tcp=127.0.0.1:2345"
+#        runtime: runc
+    
+    ###########################################################################
+    # Motor Control on Seacat
+    device-motor-bellmarineac34-0:
+        container_name: opendlv-device-motor-bellmarineac34-0
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=160 --can=can0 --sender-stamp-offset=0"
+    
+    device-motor-bellmarineac34-1:
+        container_name: opendlv-device-motor-bellmarineac34-1
+        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
+        network_mode: "host"
+        command: "opendlv-device-motor-bellmarineac34 --cid=160 --can=can1 --sender-stamp-offset=10 --flip"
+   
+    ###########################################################################
+    # Seacat ThumbControl UI
+#    ui-seacat:
+#        container_name: opendlv-ui-seacat
+#        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.3
+#        network_mode: "host"
+#        command: "opendlv-ui-seacat --cid=160 --http-root=/srv/http --port=8000"
+
+    ###########################################################################
+    # Seacat RUT1 GPS NMEA 
+    dev-gps-nmea-rut:
+        container_name: dev-gps-nmea-rut
+        image: nmea-udp:latest
+        restart: always
+        network_mode: "host"
+        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=160 --id=0"
+        
+    # Trimble GPS NMEA 
+#    dev-gps-nmea:
+#        container_name: dev-gps-nmea
+#        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.15
+#        restart: always
+#        network_mode: "host"
+#        command: "--nmea_ip=192.168.1.196 --nmea_port=9999 --cid=160 --id=1"   
+   
+    ############################################################################
+    # Axis quad-camera
 #    dev-camera-rtp0:
 #        container_name: dev-camera-rtp0
 #        image: chalmersrevere/opendlv-device-camera-rtp-amd64:v0.0.2
@@ -48,9 +121,11 @@ services:
 #        network_mode: "host"
 #        command: "opendlv-device-camera-rtp --url=rtsp://192.168.1.213:554/axis-media/media.amp?camera=4 --cid=160 --id=3 --client-port-udp-a=35006 --verbose"
 
-#    dev-camera-axis-out:
-#        container_name: dev-camera-axis-out
-#        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.2
+    ############################################################################
+    # Axis0 (Axis Camera)
+#    dev-camera-axis0:
+#        container_name: dev-camera-axis0
+#        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
 #        cpuset: "2"
 #        restart: always
 #        ipc: "host"
@@ -62,7 +137,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --remote --recsuffix=-axis-out-jpeg --cid=160 --id=0"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=0"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -77,6 +152,98 @@ services:
 #        - /tmp:/tmp
 #        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=0"
 
+    # Axis1 (Axis Camera)
+#    dev-camera-axis1:
+#        container_name: dev-camera-axis1
+#        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
+#        cpuset: "2"
+#        restart: always
+#        ipc: "host"
+#        network_mode: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        - $HOME/recordings:/recordings
+#        working_dir: /recordings
+#        cap_add:
+#        - SYS_NICE
+#        entrypoint: ""
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=1"
+
+#    video-x264-encoder-amd64:
+#        build:
+#            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
+#            dockerfile: Dockerfile.amd64
+#        depends_on:
+#        - dev-camera-axis-out
+#        restart: always
+#        network_mode: "host"
+#        ipc: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=1"
+
+    # Axis2 (Axis Camera)
+#    dev-camera-axis2:
+#        container_name: dev-camera-axis2
+#        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
+#        cpuset: "2"
+#        restart: always
+#        ipc: "host"
+#        network_mode: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        - $HOME/recordings:/recordings
+#        working_dir: /recordings
+#        cap_add:
+#        - SYS_NICE
+#        entrypoint: ""
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=2"
+
+#    video-x264-encoder-amd64:
+#        build:
+#            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
+#            dockerfile: Dockerfile.amd64
+#        depends_on:
+#        - dev-camera-axis-out
+#        restart: always
+#        network_mode: "host"
+#        ipc: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=2"
+
+    # Axis3 (Axis Camera)
+#    dev-camera-axis2:
+#        container_name: dev-camera-axis3
+#        image: chalmersrevere/opendlv-device-camera-mjpegoverhttp-multi:v0.0.3
+#        cpuset: "2"
+#        restart: always
+#        ipc: "host"
+#        network_mode: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        - $HOME/recordings:/recordings
+#        working_dir: /recordings
+#        cap_add:
+#        - SYS_NICE
+#        entrypoint: ""
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=4 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=3"
+
+#    video-x264-encoder-amd64:
+#        build:
+#            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
+#            dockerfile: Dockerfile.amd64
+#        depends_on:
+#        - dev-camera-axis-out
+#        restart: always
+#        network_mode: "host"
+#        ipc: "host"
+#        volumes:
+#        - /tmp:/tmp
+#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=3"
+
+    ###########################################################################
+    # Velodyne VLP16 Lidar.
 #    device-lidar-vlp16:
 #        container_name: device-lidar-vlp16
 #        image: chalmersrevere/opendlv-device-lidar-vlp16-multi:v0.0.10
@@ -84,26 +251,27 @@ services:
 #        network_mode: "host"
 #        command: "--vlp16_ip=0.0.0.0 --vlp16_port=2368 --cid=160 --id=0 --nogpstime"
 
-#    gw-wice:
-#        container_name: opendlv-gw-wice
-#        image: chalmersrevere/opendlv-gw-wice-amd64:v0.0.1
-#        network_mode: "host"
-#        command: "opendlv-gw-wice --cid=160 --ip=88.131.107.11 --port=10002"
-    
-#    device-gamepad:
-#        container_name: opendlv-device-gamepad
+    ###########################################################################
+    # PS3 Controller  
+#    device-gamepad-amd64:
+#        container_name: device-gamepad-amd64
 #        image: chalmersrevere/opendlv-device-gamepad-amd64:seacat
 #        devices:
-#        - /dev/input/js0
+#        - /dev/input/js0:/dev/input/js0
 #        network_mode: "host"
-#        command: "opendlv-device-gamepad --cid=160 --freq=10 --device=/dev/input/js0 --axis-left-updown=1 --axis-right-updown=4"
+#        command: "opendlv-device-gamepad --freq=10 --device=/dev/input/js0 --axis-left-updown=1 --axis-right-updown=4 --cid=160"
+#        command: "--device=/dev/input/js0 --axis-left-updown=1 --axis-right-updown=3 --freq=10 --cid=160"
 
+    ###########################################################################
+    # SMS Functionality  
 #    gw-sms-rut:
 #        container_name: opendlv-gw-sms-rut
 #        image: chalmersrevere/opendlv-gw-sms-rut-amd64:v0.0.1
 #        network_mode: "host"
-#        command: "opendlv-gw-sms-rut --cid=160 --url=http://192.168.1.1 --user=revere --password=reveregwsms --verbose"
+#        command: "opendlv-gw-sms-rut --url=http://192.168.1.1 --user=revere --password=reveregwsms --cid=160 --verbose"
 
+    ###########################################################################
+    # OpenDLV Vehicle View  
     vehicle-view:
         container_name: opendlv-vehicle-view
         image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
@@ -115,7 +283,6 @@ services:
         environment:
         - OD4SESSION_CID=160
         - PLAYBACK_OD4SESSION_CID=260
-        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino
         ports:
         - "8081:8081"
         cap_add:
@@ -123,59 +290,22 @@ services:
         entrypoint: ""
         command: "nice -n -15 node index.js"
 
-#    logic-demo-seacat:
-#        container_name: opendlv-logic-demo-seacat
-#        image: chalmersrevere/opendlv-logic-demo-seacat-amd64:v0.0.1
+    ###########################################################################
+    # Logic Path/Waypoint Follower
+#    logic-pathfollower-twopointmodel:
+#        container_name: opendlv-logic-pathfollower-twopointmodel
+#        image: chalmersrevere/opendlv-logic-pathfollower-twopointmodel:v0.0.1
 #        network_mode: "host"
-#        command: "opendlv-logic-demo-seacat --cid=160 --verbose"
-    
-#    perception-vision-detectobjectbycolor:
-#        container_name: perception-vision-detectobjectbycolor
-#        image: chalmersrevere/opendlv-perception-vision-detectobjectbycolor-amd64:v0.0.1
-#        restart: on-failure
-#        network_mode: "host"
-#        ipc: "host"
 #        volumes:
-#        - /tmp:/tmp
-#        command: "opendlv-perception-vision-detectobjectbycolor --cid=160 --name=axis-out.argb --width=640 --height=368 --verbose --hl=105 --hu=130 --sl=200 --su=255 --vl=30 --vu=160"
-
-    logic-pathfollower-twopointmodel:
-        container_name: opendlv-logic-pathfollower-twopointmodel
-        image: chalmersrevere/opendlv-logic-pathfollower-twopointmodel:v0.0.1
-        network_mode: "host"
-        volumes:
-        - ./CID-100-recording-2019-08-28_081803-selection.rec:/var/path.rec
-        command: "opendlv-logic-pathfollower-twopointmodel --cid=160 --freq=20 --rec-path=/var/path.rec --max-preview-distance=20.0 --time-to-align=2.0 --time-to-arrive=20.0 --verbose"
-
-    logic-control-differentialsteering:
-        container_name: logic-control-differentialsteering
-        image: chalmersrevere/opendlv-logic-control-differentialsteering-amd64:v0.0.1 
-        network_mode: "host"
-        command: "opendlv-logic-control-differentialsteering --cid=160 --id-left=0 --id-right=10 --freq=20 --track-width=1.8 --speed-max=1.5"
-
-    device-motor-bellmarineac34-0:
-        container_name: opendlv-device-motor-bellmarineac34-0
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
-        network_mode: "host"
-        command: "opendlv-device-motor-bellmarineac34 --cid=160 --can=can0 --sender-stamp-offset=0"
-    
-    device-motor-bellmarineac34-1:
-        container_name: opendlv-device-motor-bellmarineac34-1
-        image: chalmersrevere/opendlv-device-motor-bellmarineac34-amd64:v0.0.2
-        network_mode: "host"
-        command: "opendlv-device-motor-bellmarineac34 --cid=160 --can=can1 --sender-stamp-offset=10 --flip"
-
-    dev-gps-nmea:
-        container_name: dev-gps-nmea
-#       image: nmea-udp:latest
-        image: chalmersrevere/opendlv-device-gps-nmea-multi:v0.0.15
-        restart: on-failure
-        network_mode: "host"
-#        command: "--nmea_ip=0.0.0.0 --nmea_port=8500 --cid=160"
-        command: "--nmea_ip=192.168.1.196 --nmea_port=9999 --cid=160"
-
-#    ui-seacat:
-#        container_name: opendlv-ui-seacat
-#        image: chalmersrevere/opendlv-ui-seacat-amd64:v0.0.3
+#        - ./CID-100-recording-2019-08-28_081803-selection.rec:/var/path.rec
+#        command: "opendlv-logic-pathfollower-twopointmodel --rec-path=/var/path.rec --max-preview-distance=20.0 --time-to-align=2.0 --time-to-arrive=20.0 --cid=160 --freq=20 --verbose"
+        
+    ###########################################################################
+    # Logic Path/Waypoint Follower
+#    logic-control-differentialsteering:
+#        container_name: logic-control-differentialsteering
+#        image: chalmersrevere/opendlv-logic-control-differentialsteering-amd64:v0.0.1 
 #        network_mode: "host"
-#        command: "opendlv-ui-seacat --cid=160 --http-root=/srv/http --port=8000"
+#        command: "opendlv-logic-control-differentialsteering --id-left=0 --id-right=10 --track-width=1.8 --speed-max=1.5 --freq=20 --cid=160"
+
+######################################################################################  
