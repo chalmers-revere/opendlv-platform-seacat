@@ -23,8 +23,7 @@ services:
     
     ###########################################################################
     # Relay Services
-
-#       relay-serve-from-50:
+#    relay-serve-from-50:
 #        container_name: relay-serve-from-50
 #        image: chrberger/cluon-relay-multi:v0.0.4
 #        cpuset: "1"
@@ -36,7 +35,7 @@ services:
 #        command: "nice -n -6 /usr/bin/cluon-relay --cid-from=50 --via-tcp=2345 --timeout=200"
 #        runtime: runc
 
-#       relay-receive-from-50:
+#    relay-receive-from-50:
 #        container_name: relay-receive-from-50
 #        image: chrberger/cluon-relay-multi:v0.0.4
 #        cpuset: "1"
