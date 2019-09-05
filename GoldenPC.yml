@@ -142,7 +142,7 @@ services:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis0
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
@@ -172,7 +172,7 @@ services:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis1
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
@@ -202,7 +202,7 @@ services:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis2
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
@@ -232,7 +232,7 @@ services:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis3
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
