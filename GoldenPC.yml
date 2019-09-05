@@ -242,8 +242,8 @@ services:
 
     ###########################################################################
     # Velodyne VLP16 Lidar.
-#    device-lidar-vlp16:
-#        container_name: device-lidar-vlp16
+#    dev-lidar-vlp16:
+#        container_name: dev-lidar-vlp16
 #        image: chalmersrevere/opendlv-device-lidar-vlp16-multi:v0.0.10
 #        restart: always
 #        network_mode: "host"
@@ -251,8 +251,8 @@ services:
 
     ###########################################################################
     # PS3 Controller  
-#    device-gamepad-amd64:
-#        container_name: device-gamepad-amd64
+#    dev-gamepad-amd64:
+#        container_name: dev-gamepad-amd64
 #        image: chalmersrevere/opendlv-device-gamepad-amd64:seacat
 #        devices:
 #        - /dev/input/js0:/dev/input/js0
@@ -270,7 +270,7 @@ services:
 
     ###########################################################################
     # OpenDLV Vehicle View  
-    vehicle-view:
+    opendlv-vehicle-view:
         container_name: opendlv-vehicle-view
         image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
         cpuset: "1"
