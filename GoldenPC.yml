@@ -165,7 +165,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=1"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=360 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=1"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -178,7 +178,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=1"
+#        command: "--name=axis-out.i420 --width=640 --height=380 --cid=160 --id=1"
 
     # Axis2 (Axis Camera)
 #    dev-camera-axis2:
