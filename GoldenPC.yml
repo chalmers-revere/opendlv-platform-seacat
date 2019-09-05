@@ -135,7 +135,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=0"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis0.i420 --name.argb=axis0.argb --cid=160 --id=0"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -148,7 +148,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=0"
+#        command: "--name=axis0.i420 --width=640 --height=480 --cid=160 --id=0"
 
     # Axis1 (Axis Camera)
 #    dev-camera-axis1:
@@ -165,7 +165,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=360 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=1"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=360 --name.i420=axis1.i420 --name.argb=axis1.argb --cid=160 --id=1"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -178,7 +178,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=380 --cid=160 --id=1"
+#        command: "--name=axis1.i420 --width=640 --height=380 --cid=160 --id=1"
 
     # Axis2 (Axis Camera)
 #    dev-camera-axis2:
@@ -195,7 +195,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=2"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis2.i420 --name.argb=axis2.argb --cid=160 --id=2"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -208,7 +208,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=2"
+#        command: "--name=axis2.i420 --width=640 --height=480 --cid=160 --id=2"
 
     # Axis3 (Axis Camera)
 #    dev-camera-axis2:
@@ -225,7 +225,7 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=4 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=3"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=4 --width=640 --height=480 --name.i420=axis3.i420 --name.argb=axis3.argb --cid=160 --id=3"
 
 #    video-x264-encoder-amd64:
 #        build:
@@ -238,7 +238,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=3"
+#        command: "--name=axis3.i420 --width=640 --height=480 --cid=160 --id=3"
 
     ###########################################################################
     # Velodyne VLP16 Lidar.
