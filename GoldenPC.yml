@@ -281,6 +281,7 @@ services:
         environment:
         - OD4SESSION_CID=160
         - PLAYBACK_OD4SESSION_CID=260
+        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino 
         ports:
         - "8081:8081"
         cap_add:
