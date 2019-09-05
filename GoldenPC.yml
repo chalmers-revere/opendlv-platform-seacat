@@ -1,4 +1,4 @@
-# Copyright (C) 2019 Ola Benderius
+# Copyright (C) 2019 Arpit Karsolia
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -273,6 +273,7 @@ services:
     vehicle-view:
         container_name: opendlv-vehicle-view
         image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
+        cpuset: "1"
         restart: always
         network_mode: "host"
         volumes:
@@ -287,7 +288,8 @@ services:
         cap_add:
         - SYS_NICE
         entrypoint: ""
-        command: "nice -n -15 node index.js"
+        command: "nice -n -1 node index.js"
+        runtime: runc
 
     ###########################################################################
     # Logic Path/Waypoint Follower
