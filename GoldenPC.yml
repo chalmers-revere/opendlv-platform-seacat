@@ -178,7 +178,7 @@ services:
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis1.i420 --width=640 --height=380 --cid=160 --id=1"
+#        command: "--name=axis1.i420 --width=640 --height=360 --cid=160 --id=1"
 
     # Axis2 (Axis Camera)
 #    dev-camera-axis2:
@@ -282,7 +282,6 @@ services:
         environment:
         - OD4SESSION_CID=160
         - PLAYBACK_OD4SESSION_CID=254
-        - OPENDLV_VEHICLE_VIEW_PLATFORM=Rhino 
         ports:
         - "8081:8081"
         cap_add:
