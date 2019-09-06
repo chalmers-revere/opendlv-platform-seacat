@@ -1,4 +1,4 @@
-# Copyright (C) 2019 Ola Benderius
+# Copyright (C) 2019 Arpit Karsolia
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,37 +14,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 version: '2'
+
+services:
 ######################################################################################
 #
 # Microservices for Seacat (SP Marine Tech).
 #
 ######################################################################################
-services:
-    
-    ###########################################################################
     # Relay Services
 #    relay-serve-from-50:
 #        container_name: relay-serve-from-50
 #        image: chrberger/cluon-relay-multi:v0.0.4
-#        cpuset: "1"
+#        cpuset: "0"
 #        restart: always
 #        network_mode: "host"
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -6 /usr/bin/cluon-relay --cid-from=50 --via-tcp=2345 --timeout=200"
+#        command: "nice -n -7 /usr/bin/cluon-relay --cid-from=50 --via-tcp=2345 --timeout=200"
 #        runtime: runc
 
 #    relay-receive-from-50:
 #        container_name: relay-receive-from-50
 #        image: chrberger/cluon-relay-multi:v0.0.4
-#        cpuset: "1"
+#        cpuset: "0"
 #        restart: always
 #        network_mode: "host"
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -6 /usr/bin/cluon-relay --cid-to=160 --via-tcp=127.0.0.1:2345"
+#        command: "nice -n -7 /usr/bin/cluon-relay --cid-to=160 --via-tcp=127.0.0.1:2345"
 #        runtime: runc
     
     ###########################################################################
@@ -136,20 +135,20 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=0"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=1 --width=640 --height=480 --name.i420=axis0.i420 --name.argb=axis0.argb --cid=160 --id=0"
 
 #    video-x264-encoder-amd64:
 #        build:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis0
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=0"
+#        command: "--name=axis0.i420 --width=640 --height=480 --cid=160 --id=0"
 
     # Axis1 (Axis Camera)
 #    dev-camera-axis1:
@@ -166,20 +165,20 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=1"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=2 --width=640 --height=360 --name.i420=axis1.i420 --name.argb=axis1.argb --cid=160 --id=1"
 
 #    video-x264-encoder-amd64:
 #        build:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis1
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=1"
+#        command: "--name=axis1.i420 --width=640 --height=360 --cid=160 --id=1"
 
     # Axis2 (Axis Camera)
 #    dev-camera-axis2:
@@ -196,20 +195,20 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=2"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=3 --width=640 --height=480 --name.i420=axis2.i420 --name.argb=axis2.argb --cid=160 --id=2"
 
 #    video-x264-encoder-amd64:
 #        build:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis2
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=2"
+#        command: "--name=axis2.i420 --width=640 --height=480 --cid=160 --id=2"
 
     # Axis3 (Axis Camera)
 #    dev-camera-axis2:
@@ -226,25 +225,25 @@ services:
 #        cap_add:
 #        - SYS_NICE
 #        entrypoint: ""
-#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=4 --width=640 --height=480 --name.i420=axis-out.i420 --name.argb=axis-out.argb --cid=160 --id=3"
+#        command: "nice -n -8 /usr/bin/opendlv-device-camera-mjpegoverhttp --url=http://192.168.1.213/mjpg/video.mjpg?camera=4 --width=640 --height=480 --name.i420=axis3.i420 --name.argb=axis3.argb --cid=160 --id=3"
 
 #    video-x264-encoder-amd64:
 #        build:
 #            context: https://github.com/chalmers-revere/opendlv-video-x264-encoder.git
 #            dockerfile: Dockerfile.amd64
 #        depends_on:
-#        - dev-camera-axis-out
+#        - dev-camera-axis3
 #        restart: always
 #        network_mode: "host"
 #        ipc: "host"
 #        volumes:
 #        - /tmp:/tmp
-#        command: "--name=axis-out.i420 --width=640 --height=480 --cid=160 --id=3"
+#        command: "--name=axis3.i420 --width=640 --height=480 --cid=160 --id=3"
 
     ###########################################################################
     # Velodyne VLP16 Lidar.
-#    device-lidar-vlp16:
-#        container_name: device-lidar-vlp16
+#    dev-lidar-vlp16:
+#        container_name: dev-lidar-vlp16
 #        image: chalmersrevere/opendlv-device-lidar-vlp16-multi:v0.0.10
 #        restart: always
 #        network_mode: "host"
@@ -252,8 +251,8 @@ services:
 
     ###########################################################################
     # PS3 Controller  
-#    device-gamepad-amd64:
-#        container_name: device-gamepad-amd64
+#    dev-gamepad-amd64:
+#        container_name: dev-gamepad-amd64
 #        image: chalmersrevere/opendlv-device-gamepad-amd64:seacat
 #        devices:
 #        - /dev/input/js0:/dev/input/js0
@@ -271,9 +270,10 @@ services:
 
     ###########################################################################
     # OpenDLV Vehicle View  
-    vehicle-view:
+    opendlv-vehicle-view:
         container_name: opendlv-vehicle-view
         image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
+        cpuset: "1"
         restart: always
         network_mode: "host"
         volumes:
@@ -281,13 +281,14 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         environment:
         - OD4SESSION_CID=160
-        - PLAYBACK_OD4SESSION_CID=260
+        - PLAYBACK_OD4SESSION_CID=254
         ports:
         - "8081:8081"
         cap_add:
         - SYS_NICE
         entrypoint: ""
-        command: "nice -n -15 node index.js"
+        command: "nice -n -1 node index.js"
+        runtime: runc
 
     ###########################################################################
     # Logic Path/Waypoint Follower
