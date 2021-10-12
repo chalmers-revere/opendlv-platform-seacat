@@ -1,0 +1,79 @@
+version: '2'
+
+services:
+  device-camera-pylon-mono:
+    image: opendlv-device-camera-pylon:latest
+    ipc: "host"
+    network_mode: "host"
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: "--camera=40116185 --cid=113 --id=0 --width=1920 --height=1200 --name.i420=basler-m.i420 --name.argb=basler-m.argb --exposuretime=10000 --gain=4.0 --fps=10 --info --verbose --sync"
+
+  video-h264-encoder-mono:
+    build:
+      context: https://github.com/chalmers-revere/opendlv-video-h264-encoder.git#v0.0.4
+      dockerfile: Dockerfile.amd64
+    restart: on-failure
+    network_mode: "host"
+    ipc: "host"
+    volumes:
+      - /tmp:/tmp
+    command: "--cid=113 --id=0 --name=basler-m.i420 --width=1920 --height=1200"
+
+
+
+  
+  device-camera-pylon-rgb:
+    image: opendlv-device-camera-pylon:latest
+    ipc: "host"
+    network_mode: "host"
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: "--camera=40115504 --cid=113 --id=1 --width=1920 --height=1200 --name.i420=basler-c.i420 --name.argb=basler-c.argb --exposuretime=10000 --gain=4.0 --fps=10 --info --verbose --sync"
+  
+  video-h264-encoder-rgb:
+    build:
+      context: https://github.com/chalmers-revere/opendlv-video-h264-encoder.git#v0.0.4
+      dockerfile: Dockerfile.amd64
+    restart: on-failure
+    network_mode: "host"
+    ipc: "host"
+    volumes:
+      - /tmp:/tmp
+    command: "--cid=113 --id=1 --name=basler-c.i420 --width=1920 --height=1200"
+  
+
+
+  dlv-device-sonar-bvt:
+    image: dlv-device-sonar-bvt:latest
+    ipc: "host"
+    network_mode: "host"
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: "--cid=113 --ip=10.50.50.20 --verbose"
+
+
+
+  opendlv-vehicle-view:
+    container_name: opendlv-vehicle-view
+    image: chalmersrevere/opendlv-vehicle-view-multi:v0.0.60
+    cpuset: "1"
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ~/recordings:/opt/vehicle-view/recordings
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - OD4SESSION_CID=113
+      - PLAYBACK_OD4SESSION_CID=254
+    cap_add:
+      - SYS_NICE
+    entrypoint: ""
+    command: "nice -n -1 node index.js"
+    runtime: runc
