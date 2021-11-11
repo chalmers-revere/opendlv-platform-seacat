@@ -1,0 +1,31 @@
+# Copyright (C) 2020 Ola Benderius
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: '2'
+
+services:
+    cluon-relay-client:
+        container_name: cluon-relay-client
+        image: chrberger/cluon-relay-multi:ob
+        network_mode: "host"
+        command: "cluon-relay --cid-from=180 --via-tcp=127.0.0.1:2345"
+    
+    dev-gamepad-amd64:
+        container_name: dev-gamepad-amd64
+        image: chalmersrevere/opendlv-device-gamepad-amd64:seacat
+        devices:
+        - /dev/input/js0:/dev/input/js0
+        network_mode: "host"
+        command: "opendlv-device-gamepad --freq=10 --device=/dev/input/js0 --axis-left-updown=1 --axis-right-updown=4 --cid=180 --verbose"
