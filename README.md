@@ -1,1 +1,1 @@
-chalmers-revere/opendlv-platform-otter
+Moved to https://git.opendlv.org.
